@@ -15,16 +15,32 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Check for props.conf
+      id: check-props
       run: |
         if [ -f manager-apps/**/local/props.conf ]; then
           echo "props.conf found"
-          if grep -q "TIME_FORMAT" manager-apps/**/props.conf; then
+          if grep -q "TIME_FORMAT" manager-apps/**/local/props.conf; then
             echo "TIME_FORMAT found in props.conf"
           else
             echo "TIME_FORMAT not found in props.conf"
+            echo "TIME_FORMAT not found in props.conf" > result.txt
             exit 1
           fi
         else
           echo "props.conf not found"
+          echo "props.conf not found" > result.txt
           exit 1
-        fi
+
+    - name: Post comment on failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const result = fs.readFileSync('result.txt', 'utf8');
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: result
+          });
