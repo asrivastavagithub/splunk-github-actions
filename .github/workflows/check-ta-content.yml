@@ -1,0 +1,30 @@
+name: Check props.conf for TIME_FORMAT
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'manager-apps/**'
+
+jobs:
+  check-props:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check for props.conf
+      run: |
+        if [ -f manager-apps/**/local/props.conf ]; then
+          echo "props.conf found"
+          if grep -q "TIME_FORMAT" manager-apps/**/props.conf; then
+            echo "TIME_FORMAT found in props.conf"
+          else
+            echo "TIME_FORMAT not found in props.conf"
+            exit 1
+          fi
+        else
+          echo "props.conf not found"
+          exit 1
+        fi
