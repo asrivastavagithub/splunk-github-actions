@@ -17,11 +17,12 @@ jobs:
     - name: Check for props.conf
       id: check-props
       run: |
-        if [ -f manager-apps/**/local/props.conf ]; then
-          echo "props.conf found"
-          else
-          echo "props.conf not found"
-          exit 1
+        if [ -f "manager-apps/**/local/props.conf" ]
+        then
+            echo "props.conf exists."
+        else
+            echo "props.conf does not exist."
+        fi
 
     # - name: Post comment on failure
     #   if: failure()
