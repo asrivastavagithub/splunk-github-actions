@@ -17,12 +17,24 @@ jobs:
     - name: Check for props.conf
       id: check-props
       run: |
-        if [ -f "manager-apps/TA-manager-app/local/props.conf" ]
-        then
-            echo "props.conf exists."
-        else
-            echo "props.conf does not exist."
+        found=false
+        for path in manager-apps/*/local/props.conf deployment-apps/*/local/props.conf shcluster/apps/*/local/props.conf; do
+            if [ -f "$path" ]; then
+          echo "props.conf found in $path, validating content..."
+          found=true
+            fi
+        done
+
+        if [ "$found" = false ]; then
+            echo "props.conf not found, skipping validation..."
         fi
+
+
+  # if ls */*/local/prop.conf 1> /dev/null 2>&1; then
+    #     echo "props.conf found, validating content..."
+    # else
+    #     echo "props.conf not found, skipping validation..."
+    # fi
 
     # - name: Post comment on failure
     #   if: failure()
