@@ -17,7 +17,7 @@ jobs:
     - name: Check for props.conf
       id: check-props
       run: |
-        if [ -f "manager-apps/*/local/props.conf" ]
+        if [ -f "manager-apps/TA-manager-app/local/props.conf" ]
         then
             echo "props.conf exists."
         else
